@@ -1,76 +1,43 @@
 <template>
-	<div class="page row">
-		<div class="menu">
-			<div class=" row justify-content-around align-items-center d-inline tools">
-				<button class="btn btn-sm btn-primary  rounded-pill" @click="refreshList()">
-					<i class="fas fa-redo"></i> Tải lại
-				</button>
-
-				<button class="btn btn-sm btn-success  rounded-pill" @click="goToAddContact">
-					<i class="fas fa-plus"></i> Thêm
-				</button>
-
-				<button class="btn btn-sm btn-danger rounded-pill" @click="removeAllContacts">
-					<i class="fas fa-trash"></i> Xóa hết
-				</button>
-				<button class="btn btn-sm btn-warning rounded-pill invisible " @click="refreshList"
-					style="padding:0px; height:100%;">
-					<div v-if="activeContact" class="btn-edit">
-						<router-link :to="{
-							name: 'contact.edit',
-							params: { id: activeContact._id },
-						}">
-							<button class="btn btn-sm btn-info h-100 rounded-pill visible btn-setting">
-								<i class="fa-solid fa-book-open"></i> Xem
-							</button>
-						</router-link>
-					</div>
-				</button>
-				<button class="btn btn-sm btn-warning rounded-pill invisible " @click="refreshList"
-					style="padding:0px; height:100%;">
-					<div v-if="activeContact" class="btn-edit">
-						<button class="btn btn-sm btn-warning h-100 rounded-pill visible btn-setting"
-							@click="deleteContact(activeContact._id)">
-							<i class="fa-solid fa-calendar-minus"></i> Xóa
-						</button>
-					</div>
-				</button>
-			</div>
-			<div class="col-md-10 menu-search">
-				<InputSearch v-model="searchText" />
-			</div>
+	<div class="contact-book">
+	<div class="mx-auto">
+		
+		<div class="menu-search row justify-content-center">
+			<InputSearch v-model="searchText" class="mt-5 text-center col-md-5 input-lg" />
 		</div>
+		<div class="page row justify-content-center">
+			
 
-		<div class="mt-3">
-			<h4>
-				Ghi chú
-				<i class="fa-regular fa-clipboard"></i>
-			</h4>
-			<ContactList v-if="filteredContactsCount > 0" :contacts="filteredContacts"
-				v-model:activeIndex="activeIndex" />
-			<p v-else>Chưa có ghi chú nào.</p>
-
-
+			<div class="mt-3 text-center">
+				<h3 class="text-white">
+					Sách
+					<i class="fa-solid fa-book"></i>
+				</h3>
+				
+				<ContactList v-if="filteredBooksCount > 0" :books="filteredBooks" v-model:activeIndex="activeIndex" />
+				<p v-else>Chưa có ghi chú nào.</p>
+			</div>
 		</div>
 	</div>
+</div>
 </template>
 
 <script>
 import { swalert } from "@/mixins/swal.mixin";
-import ContactCard from "@/components/ContactCard.vue";
+
 import InputSearch from "@/components/InputSearch.vue";
 import ContactList from "@/components/ContactList.vue";
-import ContactService from "@/services/contact.service";
+import BookService from "@/services/book.service";
 
 export default {
 	components: {
-		ContactCard,
+		
 		InputSearch,
 		ContactList,
 	},
 	data() {
 		return {
-			contacts: [],
+			books: [],
 			activeIndex: -1,
 			searchText: "",
 		};
@@ -81,32 +48,33 @@ export default {
 		},
 	},
 	computed: {
-		contactStrings() {
-			return this.contacts.map((contact) => {
-				const { name, email, address, phone, favorite } = contact;
-				return [name, email, address, phone, favorite].join("");
+		bookStrings() {
+			return this.books.map((book) => {
+				const { title,image, author, price, favorite } = book;
+				return [title,image, author, price, favorite].join("");
 			});
 		},
-		filteredContacts() {
-			if (!this.searchText) return this.contacts;
-			return this.contacts.filter((_contact, index) =>
-				this.contactStrings[index].includes(this.searchText)
+		filteredBooks() {
+			if (!this.searchText) return this.books;
+			return this.books.filter((_book, index) =>
+				this.bookStrings[index].includes(this.searchText)
 			);
 		},
-		activeContact() {
+		activeBook() {
 			if (this.activeIndex < 0) return null;
-			return this.filteredContacts[this.activeIndex];
+			return this.filteredBooks[this.activeIndex];
 		},
-		filteredContactsCount() {
-			return this.filteredContacts.length;
+		filteredBooksCount() {
+			return this.filteredBooks.length;
 		},
 	},
 	methods: {
-		async retrieveContacts() {
+		async retrieveBooks() {
 			try {
-				this.contacts = await ContactService.getAll();
-				this.contacts.sort((current, next) =>
-					current.name.localeCompare(next.name)
+				this.books = await BookService.getAll();
+				// console.log("check",this.books)
+				this.books.sort((current, next) =>
+					current.title.localeCompare(next.title)
 				);
 			} catch (error) {
 				console.log(error);
@@ -114,11 +82,11 @@ export default {
 		},
 
 		refreshList() {
-			this.retrieveContacts();
+			this.retrieveBooks();
 			this.activeIndex = -1;
 		},
 
-		async removeAllContacts() {
+		async removeAllBooks() {
 			swalert
 				.fire({
 					title: "Xóa tất cả ghi chú",
@@ -130,7 +98,7 @@ export default {
 				.then(async (result) => {
 					if (result.isConfirmed) {
 						try {
-							await ContactService.deleteAll();
+							await BookService.deleteAll();
 							this.refreshList();
 						} catch (error) {
 							console.log(error);
@@ -139,7 +107,7 @@ export default {
 				});
 		},
 
-		async deleteContact(id) {
+		async deleteBook(id) {
 			swalert
 				.fire({
 					title: "Xác nhận xóa ghi chú",
@@ -151,7 +119,7 @@ export default {
 				.then(async (result) => {
 					if (result.isConfirmed) {
 						try {
-							await ContactService.delete(id);
+							await BookService.delete(id);
 							this.refreshList();
 						} catch (error) {
 							console.log(error);
@@ -160,8 +128,8 @@ export default {
 				});
 		},
 
-		goToAddContact() {
-			this.$router.push({ name: "contact.add" });
+		goToAddBook() {
+			this.$router.push({ name: "book.add" });
 		},
 	},
 	created() {
@@ -173,51 +141,53 @@ export default {
 <style scoped>
 .page {
 	text-align: left;
-}
-
-.menu {
-	/* position: relative; */
-	display: flex;
-	width: 100%;
-	/* height:50px; */
-	/* background-color:red; */
+	margin-top: 20px;
 }
 
 .menu-search {
-	max-width: 600px;
+	max-width: 100%;
+	margin-bottom: 20px;
+}
+.banner{
+	width: 100%;
+	position: relative;
+
+}
+.banner-image img{
+	width: 100%;
+}
+.banner-image{
+}
+.banner-conten{
+	position: absolute;
+	top: 150px;
+	left: 650px;
+}
+.banner p{
+	font-size: 75px;
+	font-family: Georgia, 'Times New Roman', Times, serif;
+	font-style: oblique;
+	color: orangered;
+}
+.p2{
+	padding-left:250px ;
+}
+.contact-book{
+	background-color: rgb(2, 2, 48);
+}
+/* .menu {
+	width: 100%;
 }
 
 .tools {
-	height: 50px;
 	width: 600px;
-	top: 0;
-	margin: 0;
 }
 
 .btn {
 	margin: 0px 10px;
 	min-width: 90px;
 }
-
-.navbar-edit {
-	position: absolute;
-}
-
-.btn-edit {
-	color: red;
-	padding: 0px;
-	/* position:relative; */
-	width: 90px;
-}
-
-.btn-setting {
-	/* position: absolute; */
-	width: 90px;
-	left: 0px;
-	margin: auto 0;
-}
-
 .mt-3 h4 i {
 	margin-left: 4px;
-}
+} */
 </style>

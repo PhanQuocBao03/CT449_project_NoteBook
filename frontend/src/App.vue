@@ -12,7 +12,7 @@ export default {
 	<div id="app">
 		<AppHeader />
 
-		<div class="main mt-3">
+		<div class="main">
 			<router-view />
 		</div>
 	</div>
@@ -40,7 +40,10 @@ export default {
 	margin: 1rem;
 }
 .main{
-    max-width:1200px;
-    margin: 0 auto;
+    /* max-width:1200px; */
+    /* margin: 0 auto; */
+	/* background-color: #104E8B; */
+	width: 100%;
+	height: 100%;
 }
 </style>

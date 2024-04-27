@@ -1,6 +1,7 @@
 label {
     display: block;
     margin-top: 10px;
+    text-align: start;
 }
 
 .card-container.card {
@@ -39,6 +40,7 @@ label {
     display: block;
     justify-content: center;
     margin: 0 auto;
+    width: 570px;
 }
 .note-title {}
 

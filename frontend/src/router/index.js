@@ -35,14 +35,31 @@ const routes = [
 		component: () => import("@/views/UserProfile.vue"),
 	},
 	{
+		path: "/borrow",
+		name: "borrow",
+		component: () => import("@/views/BorrowBook.vue"),
+	},
+	
+	{
 		path: "/",
+		name: "home",
+		component: () => import("@/views/Home.vue"),
+	},
+	{
+		path: "/contactbook",
 		name: "contactbook",
 		component: () => import("@/views/ContactBook.vue"),
 	},
 	{
-		path: "/contacts/:id",
-		name: "contact.edit",
-		component: () => import("@/views/ContactEdit.vue"),
+		path: "/users/:id",
+		name: "user.edit",
+		component: () => import("@/views/UserEdit.vue"),
+		props: true,
+	},
+	{
+		path: "/books/:id",
+		name: "bookDetail",
+		component: () => import("@/views/BookDetail.vue"),
 		props: true,
 	},
 	{

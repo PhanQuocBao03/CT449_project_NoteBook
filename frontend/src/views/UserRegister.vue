@@ -1,8 +1,8 @@
 <template>
 	<div class="col-md-12">
-		<div class="card card-container">
-			<img id="profile-img" src="http://changsarn4u.com/loginnew/IMAGE/avatar.png" alt="Cannot load the image"
-				class="profile-img-card" />
+		<div class="mx-auto border border-color-white mt-5" style="width: 40%;">
+			<h2 class="text-center">Đăng ký</h2>
+			
 			<Form @submit="handleRegister" :validation-schema="registerFormSchema">
 				<div v-if="!successful">
 					<div class="form-group">
@@ -19,6 +19,15 @@
 						<label for="password">Mật khẩu</label>
 						<Field name="password" type="password" class="form-control" />
 						<ErrorMessage name="password" class="error-feedback" />
+					</div>
+					<div class="form-group">
+						<label for="role">Bạn là:</label>
+						<Field as="select" name="role" class="form-control">
+							<option value="staff">Nhân viên</option>
+							<option value="reader">Người đọc</option>
+							<!-- Add more role options as needed -->
+						</Field>
+						<ErrorMessage name="role" class="error-feedback" />
 					</div>
 
 					<div class="form-group">
@@ -77,6 +86,9 @@ export default {
 				.required("Vui lòng nhập vào mật khẩu!")
 				.min(6, "Mật khẩu tối thiểu 6 ký tự.")
 				.max(40, "Mật khẩu tối đa 40 ký tự."),
+			role: yup
+				.string()
+				.required("Vui lòng chọn vai trò của bạn.") // Add validation message
 		});
 
 		return {
@@ -94,11 +106,18 @@ export default {
 			this.loading = true;
 
 			try {
-				const data = await this.register(user);
+				const data = await this.register({
+					...user,
+					role: user.role // Include the role in the registration data
+				});
 
 				this.message = data.message;
 				this.successful = true;
 				this.loading = false;
+				setTimeout(() => {
+					alert("Đăng ký thành công!"); // Display alert
+					this.$router.push({ name: 'login' }); // Redirect to login page
+				}, 2000);
 			} catch (error) {
 				console.log(error);
 

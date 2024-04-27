@@ -19,7 +19,9 @@ class AuthService {
 			await this.api.post("/signup", {
 				username: user.username,
 				email: user.email,
+				image:user.image,
 				password: user.password,
+				role: user.role
 			})
 		).data;
 	}

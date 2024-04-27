@@ -1,9 +1,9 @@
 <template>
-	<div v-if="contact" class="page">
+	<div v-if="book" class="page">
 		<ContactForm
-			:contact="contact"
-			@submit:contact="updateContact"
-			@delete:contact="deleteContact"
+			:book="book"
+			@submit:book="updateBook"
+			@delete:book="deleteBook"
 		/>
 	</div>
 </template>
@@ -12,6 +12,8 @@
 import { swtoast, swalert } from "@/mixins/swal.mixin";
 import ContactForm from "@/components/ContactForm.vue";
 import ContactService from "@/services/contact.service";
+import BookService from "@/services/book.service";
+
 
 export default {
 	components: {
@@ -22,13 +24,13 @@ export default {
 	},
 	data() {
 		return {
-			contact: null,
+			book: null,
 		};
 	},
 	methods: {
-		async getContact(id) {
+		async getBook(id) {
 			try {
-				this.contact = await ContactService.get(id);
+				this.book = await BookService.get(id);
 			} catch (error) {
 				console.log(error);
 				this.$router.push({
@@ -40,11 +42,11 @@ export default {
 			}
 		},
 
-		async updateContact(data) {
+		async updateBook(data) {
 			try {
-				await ContactService.update(this.contact._id, data);
+				await BookService.update(this.book._id, data);
 				swtoast.success({
-					text: "Ghi chú được cập nhật thành công.",
+					text: "Sách được cập nhật thành công.",
 				});
 				this.$router.push({path: '/'});
 			} catch (error) {
@@ -55,7 +57,7 @@ export default {
 			}
 		},
 
-		async deleteContact() {
+		async deleteBook() {
 			swalert
 				.fire({
 					title: "Xóa Ghi Chú",
@@ -67,7 +69,7 @@ export default {
 				.then(async (result) => {
 					if (result.isConfirmed) {
 						try {
-							await ContactService.delete(this.contact._id);
+							await BookService.delete(this.book._id);
 							swtoast.success({
 								text: "Ghi Chú được xóa thành công.",
 							});
@@ -83,7 +85,7 @@ export default {
 		},
 	},
 	created() {
-		this.getContact(this.id);
+		this.getBook(this.id);
 	},
 };
 </script>

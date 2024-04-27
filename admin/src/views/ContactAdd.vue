@@ -1,8 +1,9 @@
 <template>
-	<div class="page">
-		<div>
-			<h4 class="title-add-note">Thêm ghi chú</h4>
-			<ContactForm :contact="{}" :resetAfterSubmit="false" @submit:contact="saveContact" />
+	<div class="page" style="background-color: rgb(2, 2, 48);">
+		<div >
+			<h4 class="title-add-note  text-white p-5">Thêm Sách</h4>
+			<hr>
+			<ContactForm :book="{}" :resetAfterSubmit="false" @submit:book="saveBook" />
 		</div>
 	</div>
 </template>
@@ -11,17 +12,18 @@
 import { swtoast } from "@/mixins/swal.mixin";
 import ContactForm from "@/components/ContactForm.vue";
 import ContactService from "@/services/contact.service";
+import BookService from "@/services/book.service";
 
 export default {
 	components: {
 		ContactForm,
 	},
 	methods: {
-		async saveContact(data) {
+		async saveBook(data) {
 			try {
-				await ContactService.create(data);
+				await BookService.create(data);
 				swtoast.success({
-					text: "Ghi Chú được thêm thành công.",
+					text: "Sách được thêm thành công.",
 				});
 				this.$router.push({ path: '/' });
 			} catch (error) {

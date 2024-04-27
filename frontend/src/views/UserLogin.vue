@@ -1,9 +1,9 @@
 <template>
 	<div class="col-md-12">
-		<div class="card card-container">
-			<img id="profile-img" src="http://changsarn4u.com/loginnew/IMAGE/avatar.png" alt="Cannot load the image"
-				class="profile-img-card" />
-			<Form @submit="handleLogin" :validation-schema="loginFormSchema">
+		
+		<div class="mx-auto border border-color-white mt-5" style="width: 40%;" >
+			<h2 class="text-center">Đăng nhập</h2>
+			<Form @submit="handleLogin" :validation-schema="loginFormSchema" >
 				<div class="form-group">
 					<label for="username">Tên đăng nhập</label>
 					<Field name="username" type="text" class="form-control" />
